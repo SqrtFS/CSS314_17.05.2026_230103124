@@ -1,0 +1,109 @@
+2.4  Step-by-Step Implementation Tasks
+
+ Task 1.1:
+
+1 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+2 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+Parallel region closed. Execution returned to master thread.
+
+3 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+4 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+
+5 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+
+6 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+7 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+8 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+9 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+10 - execution
+
+Master thread starting. Spawning thread team of size: 4
+[Worker] Logical Rank: 2 | Worker Thread: ForkJoinPool-1-worker-1 (OS ID: 21)
+[Worker] Logical Rank: 3 | Worker Thread: ForkJoinPool-1-worker-3 (OS ID: 23)
+[Worker] Logical Rank: 1 | Worker Thread: ForkJoinPool-1-worker-2 (OS ID: 22)
+[Master] Logical Rank: 0 | Worker Thread: ForkJoinPool-1-worker-4 (OS ID: 24)
+Parallel region closed. Execution returned to master thread.
+
+ Task 1.2:
+ Threads (P): 4 | Execution Time: 15.192 ms
+ Threads (P): 8 | Execution Time: 14.088 ms
+ Threads (P): 16 | Execution Time: 20.535 ms
+ Threads (P): 32 | Execution Time: 17.063 ms
+ Threads (P): 64 | Execution Time: 23.468 ms
+
+ Task 1.3:
+ During intensive mathematical processing, a brief spike in CPU usage is observed (reaching up to 40% of total system capacity on the CPU LOAD graph).
+ All available threads distribute computations across the processor cores in parallel;
+ subsequently, the `.join()` synchronization barrier concludes the parallel region, and the load returns to its initial level.
+
+
