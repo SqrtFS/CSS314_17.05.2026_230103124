@@ -1,0 +1,124 @@
+================================================================================
+LABORATORY EXPERIMENTAL PROTOCOL: COMPLETED TASK SHEET
+Applied Massive Parallelism: CUDA Python, Thread Geometries, and Hardware Latency Pitfalls
+================================================================================
+
+STUDENT INFORMATION & SESSION METRICS
+--------------------------------------------------------------------------------
+Student Name: Yeldar Sultanmurat
+Session / Date: October 8, 2026
+Student ID: 230103124
+Assigned GPU ID: Tesla T4 (Device 0)
+================================================================================
+
+
+SECTION 1: ENVIRONMENT PROVISIONING & HARDWARE SETUP
+--------------------------------------------------------------------------------
+Task 1.1: Hardware Telemetry Extraction
+
+[Record: NVIDIA Driver Version]            : 580.82.07
+[Record: CUDA Version Supported]          : 13.0
+[Record: Allocated GPU Name]              : Tesla T4
+[Record: Total Available VRAM]            : 15360 MiB
+[Record: Compute Capability Major.Minor]   : 7.5
+[Record: Max Threads Per Block]           : 1024
+
+
+SECTION 2: THE LIE OF GPU SPEED & THE CROSSOVER EXPERIMENT
+--------------------------------------------------------------------------------
+Task 2.2: Benchmark Across Orders of Magnitude
+
+EXPERIMENTAL DATA TABLE:
++---------------+---------------+-----------------+----------------------+-------------------+
+| Array Size(N) | CPU Time (ms) | GPU Total (ms)  | GPU Kernel Only (ms) | Winner (CPU/GPU)  |
++---------------+---------------+-----------------+----------------------+-------------------+
+| 100           | 0.063 ms      | 0.701 ms        | 0.061 ms             | CPU               |
+| 1,000         | 0.237 ms      | 0.494 ms        | 0.059 ms             | CPU               |
+| 10,000        | 2.468 ms      | 0.518 ms        | 0.058 ms             | GPU               |
+| 100,000       | 22.765 ms     | 0.704 ms        | 0.067 ms             | GPU               |
+| 1,000,000     | 262.592 ms    | 5.817 ms        | 0.147 ms             | GPU               |
+| 5,000,000     | N/A (too slow)| 12.269 ms       | 0.271 ms             | GPU               |
+| 10,000,000    | N/A (too slow)| 24.111 ms       | 0.453 ms             | GPU               |
++---------------+---------------+-----------------+----------------------+-------------------+
+
+Analysis Questions:
+
+Q1. What is the empirical Crossover Point N* on your machine?
+Answer:
+The empirical crossover point N* occurs in the range 1,000 < N* < 10,000. At N = 10,000, GPU Total Time (0.518 ms) becomes roughly 4.7x faster than CPU Pure Python Time (2.468 ms).
+
+Q2. At N=100, why is GPU Total Time dramatically slower than CPU Time? Compare the 'GPU Total' column against the 'GPU Kernel Only' column to explain where 95%+ of the elapsed time was spent:
+Answer:
+At N = 100, GPU Total Time is 0.701 ms while GPU Kernel execution time is only 0.061 ms. This shows that ~91.3% of the total elapsed time was spent on PCIe host-to-device and device-to-host memory allocations and data transfers. CPU computation on host RAM (0.063 ms) avoids this data transfer overhead entirely, making it much faster for small arrays.
+
+
+SECTION 3: THREAD GEOMETRY & BOUNDARY MEMORY CORRUPTION
+--------------------------------------------------------------------------------
+Task 3.1: The 'Missing Guard' Disaster Experiment
+Observed behavior / Console output from defective kernel:
+Execution completes without crashing or throwing an immediate Python exception. The returned host array length is 1000 and last element is 999.0. However, 24 extra threads (threads 1000 through 1023) silently write out-of-bounds into adjacent unallocated GPU memory blocks, causing silent VRAM corruption or potential CUDA illegal memory access crashes in subsequent operations.
+
+Task 3.2: Spatial Thread Coordinate Inspector (N=37, Block Size=8)
+Mandatory Calculation Metrics:
+- Total Blocks Allocated           : 5
+- Total Hardware Threads Launched   : 40
+- Number of Active Working Threads : 37
+- Number of Idle Guarded Threads   : 3
+
+Boundary Transition Table (Global ID 32 to 39):
++-----------+----------+-----------+----------------+
+| Global ID | Block ID | Thread ID | Status         |
++-----------+----------+-----------+----------------+
+| 32        | 4        | 0         | ACTIVE         |
+| 33        | 4        | 1         | ACTIVE         |
+| 34        | 4        | 2         | ACTIVE         |
+| 35        | 4        | 3         | ACTIVE         |
+| 36        | 4        | 4         | ACTIVE         |
+| 37        | 4        | 5         | IDLE (GUARDED) |
+| 38        | 4        | 6         | IDLE (GUARDED) |
+| 39        | 4        | 7         | IDLE (GUARDED) |
++-----------+----------+-----------+----------------+
+
+
+SECTION 4: THE RACE CONDITION CRIME SCENE (PARALLEL REDUCTION)
+--------------------------------------------------------------------------------
+Task 4.1: The Naive Reduction Bug (Data Corruption)
+
+Naive Kernel Trial Results (N = 50,000 ones, Target Sum = 50,000.0):
++---------+------------+--------------------+------------------------+
+| Trial # | Target Sum | Naive Kernel Output| Deviation / Lost Updates|
++---------+------------+--------------------+------------------------+
+| Trial 1 | 50,000.0   | 2.0                | 49,998.0               |
+| Trial 2 | 50,000.0   | 2.0                | 49,998.0               |
+| Trial 3 | 50,000.0   | 2.0                | 49,998.0               |
+| Trial 4 | 50,000.0   | 2.0                | 49,998.0               |
+| Trial 5 | 50,000.0   | 2.0                | 49,998.0               |
++---------+------------+--------------------+------------------------+
+
+Atomic Kernel Verification:
+- Atomic Sum Output : 50000.0
+- Matches Target   : Yes
+
+Performance Penalty Comparison:
+- Naive Kernel Time  : ~0.065 ms
+- Atomic Kernel Time : ~0.285 ms
+- Explanation of Penalty:
+Atomic operations (`cuda.atomic.add`) force memory writes to a single shared VRAM address to be serialized at the hardware memory controller level. Instead of 50,000 threads writing concurrently in parallel, they queue up sequentially to perform atomic Read-Modify-Write cycles, disabling parallel throughput for that specific address.
+
+
+SECTION 5: 2D GRID IMAGE/MATRIX PROCESSING
+--------------------------------------------------------------------------------
+Mandatory 2D Geometry Verification:
+- Grid Dimensions                   : Blocks in X: 64 | Blocks in Y: 64 | Total Blocks: 4096
+- Verified Pixel Value at Center    : 1.000 (at x=512, y=512)
+- Verified Pixel Value at Corner    : 0.000 (at x=0, y=0)
+
+
+SECTION 6: FINAL AI-IMMUNE VERIFICATION CHECKSUM
+--------------------------------------------------------------------------------
+PASTE YOUR UNIQUE 16-CHARACTER VERIFICATION TOKEN HERE:
+
+[TOKEN: 3F7FE15DD3B7D692]
+
+
+    
